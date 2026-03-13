@@ -23,6 +23,9 @@ export async function createServer() {
   const server = hapi.server({
     host: config.get('host'),
     port: config.get('port'),
+    compression: {
+      minBytes: 1024
+    },
     routes: {
       validate: {
         options: {

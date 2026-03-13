@@ -1,5 +1,16 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+
 import { createServer } from '../../server.js'
 import { statusCodes } from '../constants/status-codes.js'
+import { config } from '../../../config/config.js'
+
+const webpackManifest = JSON.parse(
+  readFileSync(
+    path.join(config.get('root'), '.public/assets-manifest.json'),
+    'utf-8'
+  )
+)
 
 describe('#serveStaticFiles', () => {
   let server
@@ -32,6 +43,20 @@ describe('#serveStaticFiles', () => {
       })
 
       expect(statusCode).toBe(statusCodes.ok)
+    })
+
+    test('Should gzip compress javascript assets when requested', async () => {
+      const { headers, statusCode } = await server.inject({
+        method: 'GET',
+        url: `/public/${webpackManifest['application.js']}`,
+        headers: {
+          'accept-encoding': 'gzip'
+        }
+      })
+
+      expect(statusCode).toBe(statusCodes.ok)
+      expect(headers['content-encoding']).toBe('gzip')
+      expect(headers.vary).toContain('accept-encoding')
     })
   })
 })

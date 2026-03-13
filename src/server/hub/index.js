@@ -1,9 +1,10 @@
 import {
-  hubListingsController,
-  docsFetcherController,
-  docsController,
-  redocController
-} from './controller.js'
+  hubListingsController} from './api-hub-controller.js'
+import {
+  redocViewController,
+  scalarViewController
+} from './doc-view-controller.js'
+import { apiDocsProxyController } from './api-docs-proxy-controller.js'
 
 export const hub = {
   plugin: {
@@ -17,23 +18,18 @@ export const hub = {
         },
         {
           method: 'GET',
-          path: '/hub/{hub}/{service}',
-          ...docsController
+          path: '/hub/{hub}/{service}/view/redoc',
+          ...redocViewController
         },
         {
           method: 'GET',
-          path: '/hub/{hub}/{service}/redoc',
-          ...redocController
-        },
-        {
-          method: 'GET',
-          path: '/hub/{hub}/{service}/scalar',
-          ...docsController
+          path: '/hub/{hub}/{service}/view/scalar',
+          ...scalarViewController
         },
         {
           method: 'GET',
           path: '/hub/{hub}/{service}/docs',
-          ...docsFetcherController
+          ...apiDocsProxyController
         }
       ])
     }

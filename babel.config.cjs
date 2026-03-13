@@ -6,7 +6,7 @@ module.exports = {
         browserslistEnv: 'javascripts',
         bugfixes: true,
         loose: true,
-        modules: true
+        modules: false
       }
     ]
   ]
