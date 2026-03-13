@@ -15,6 +15,8 @@ import { getCacheEngine } from './common/helpers/session-cache/cache-engine.js'
 import { secureContext } from '@defra/hapi-secure-context'
 import { contentSecurityPolicy } from './common/helpers/content-security-policy.js'
 import { metrics } from '@defra/cdp-metrics'
+import { s3Client } from './common/helpers/s3-client.js'
+import { getPlatformState } from './common/helpers/platform-state/get-platform-state.js'
 
 export async function createServer() {
   setupProxy()
@@ -48,12 +50,26 @@ export async function createServer() {
       {
         name: config.get('session.cache.name'),
         engine: getCacheEngine(config.get('session.cache.engine'))
+      },
+      {
+        name: 'entity_cache',
+        engine: getCacheEngine(config.get('session.cache.engine'))
       }
     ],
     state: {
       strictHeader: false
     }
   })
+
+  const entityCache = server.cache({
+    cache: 'entity_cache',
+    segment: 'entity',
+    expiresIn: 1000 * 60 * 60
+  })
+
+  server.decorate('server', 'entityCache', entityCache)
+  server.decorate('request', 'entityCache', entityCache)
+
   await server.register([
     requestLogger,
     requestTracing,
@@ -63,9 +79,26 @@ export async function createServer() {
     sessionCache,
     nunjucksConfig,
     Scooter,
-    contentSecurityPolicy,
+    //contentSecurityPolicy,
+    s3Client,
     router // Register all the controllers/routes defined in src/server/router.js
   ])
+
+  server.method({
+    name: 'getPlatformState',
+    method: (s3Client) => getPlatformState(s3Client),
+    options: {
+      cache: {
+        expiresIn: config.get('platformState.cache.ttl'),
+        generateTimeout: 3000,
+        staleIn: config.get('platformState.cache.ttl') / 2,
+        staleTimeout: 100
+      },
+      generateKey(...args) {
+        return 'platform-state'
+      }
+    }
+  })
 
   server.ext('onPreResponse', catchAll)
 
