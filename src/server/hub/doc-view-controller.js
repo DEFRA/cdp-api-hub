@@ -55,6 +55,15 @@ export const scalarViewController = {
     return h.view('hub/views/docs-scalar', {
       pageTitle: `${service} API Docs`,
       heading: `${service} API Docs`,
+      breadcrumbs: [
+        {
+          text: 'API Hub',
+          href: `/hub/${encodeURIComponent(hub)}`,
+        },
+        {
+          text: `${service} API Docs`
+        },
+      ],
       scalarConfig,
       hub
     })
@@ -89,6 +98,17 @@ export const redocViewController = {
 
     const docUrl = `/hub/${encodeURIComponent(hub)}/${encodeURIComponent(service)}/docs`
     return h.view('hub/views/docs-redoc', {
+      pageTitle: `${service} API Docs`,
+      heading: `${service} API Docs`,
+      breadcrumbs: [
+        {
+          text: 'API Hub',
+          href: `/hub/${encodeURIComponent(hub)}`,
+        },
+        {
+          text: `${service} API Docs`
+        },
+      ],
       docUrl
     })
   }
