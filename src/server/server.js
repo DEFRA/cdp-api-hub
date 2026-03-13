@@ -79,7 +79,7 @@ export async function createServer() {
     sessionCache,
     nunjucksConfig,
     Scooter,
-    //contentSecurityPolicy,
+    contentSecurityPolicy,
     s3Client,
     router // Register all the controllers/routes defined in src/server/router.js
   ])

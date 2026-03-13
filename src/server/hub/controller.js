@@ -120,7 +120,7 @@ export const redocController = {
         .code(statusCodes.notFound)
     }
 
-    const docUrl = `/hub/${encodeURIComponent(hub)}/${encodeURIComponent(service)}/api.json`
+    const docUrl = `/hub/${encodeURIComponent(hub)}/${encodeURIComponent(service)}/docs`
     return h.view('hub/docs-redoc', {
       docUrl
     })
@@ -132,15 +132,12 @@ export const docsFetcherController = {
     validate: {
       params: Joi.object({
         hub: hubValidation,
-        service: Joi.string().required(),
-        filename: Joi.string().required()
+        service: Joi.string().required()
       })
     }
   },
   async handler(request, h) {
-    const hub = request.params.hub
     const service = request.params.service
-    const filename = request.params.filename
 
     const state = await request.server.methods.getPlatformState(
       request.s3Client

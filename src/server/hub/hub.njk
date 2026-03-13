@@ -11,7 +11,7 @@
       <div class="govuk-body" data-testid="app-page-body">
         {%  for api in apis %}
           <div class="api">
-            <h3>{{ api }}</h3>
+            <h2>{{ api }}</h2>
             <a href="/hub/{{ hub }}/{{ api }}/redoc">View (redoc)</a>
             <a href="/hub/{{ hub }}/{{ api }}/scalar">View (scalar)</a>
             <br>
@@ -22,3 +22,8 @@
   </div>
 
 {% endblock %}
+
+
+{%  block fullWidthAfterContent %}
+<h1>AFTER BLOCK</h1>
+{%  endblock %}

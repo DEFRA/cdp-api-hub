@@ -22,6 +22,12 @@ export default {
   entry: {
     application: {
       import: ['./javascripts/application.js', './stylesheets/application.scss']
+    },
+    redoc: {
+      import: ['./javascripts/redoc.js']
+    },
+    scalar: {
+      import: ['./javascripts/scalar.js']
     }
   },
   experiments: {
@@ -51,6 +57,7 @@ export default {
   },
   resolve: {
     alias: {
+      null: false,
       '/public/assets': path.join(govukFrontendPath, 'dist/govuk/assets')
     }
   },

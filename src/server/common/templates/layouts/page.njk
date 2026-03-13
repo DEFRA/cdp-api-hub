@@ -33,17 +33,27 @@
   {{ pageTitle }} | {{ serviceName }}
 {% endblock %}
 
-{% block beforeContent %}
-  {% if breadcrumbs.length > 1 %}
-    {{ govukBreadcrumbs({
-      items: breadcrumbs
-    }) }}
-  {% endif %}
+{% block main %}
+  {% block fullWidthBeforeContent %}{% endblock %}
+
+  <div class="govuk-width-container {%- if containerClasses %} {{ containerClasses }}{% endif %}">
+    {% block beforeContent %}
+      {% if breadcrumbs.length > 1 %}
+        {{ govukBreadcrumbs({
+          items: breadcrumbs
+        }) }}
+      {% endif %}
+    {% endblock %}
+
+    <main class="govuk-main-wrapper {%- if mainClasses %} {{ mainClasses }}{% endif %}" id="main-content" {%- if mainLang %} lang="{{ mainLang }}"{% endif %}>
+      {% block content %}{% endblock %}
+    </main>
+
+    {% block afterContent %}{% endblock %}
+  </div>
+
+  {% block fullWidthAfterContent %}{% endblock %}
 {% endblock %}
-
-{% block content %}{% endblock %}
-
-{% block afterContent %}{% endblock %}
 
 {% block footer %}
   {{ govukFooter({

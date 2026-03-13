@@ -13,15 +13,12 @@ const contentSecurityPolicy = {
     fontSrc: ['self', 'data:', 'https://fonts.scalar.com'],
     connectSrc: ['self', 'wss', 'data:'],
     mediaSrc: ['self'],
-    styleSrc: ['self', 'data:', 'unsafe-inline', 'https://cdn.jsdelivr.net'],
+    styleSrc: ['self', 'data:', 'unsafe-inline'],
     scriptSrc: [
       'self',
       'data:',
       'unsafe-eval',
       'unsafe-inline',
-      'https://cdn.jsdelivr.net',
-      "'sha256-vGrOLI/K1l5A1fRqbOsgkQEVSdaLJib5fb0xLWUYXVo='",
-      "'sha256-ghfxlBG/wLnbs5d8V1xiu8Xh3T25KC3jM/0unhBDdhA='",
       "'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw='"
     ],
     imgSrc: ['self', 'data:'],

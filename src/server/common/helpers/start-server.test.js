@@ -27,14 +27,20 @@ describe('#startServer', () => {
     let server
 
     afterAll(async () => {
-      await server.stop({ timeout: 0 })
+      await server?.stop({ timeout: 0 })
     })
 
     test('Should start up server as expected', async () => {
+      server = await createServerImport.createServer()
+      await server.initialize()
+      vi.spyOn(server, 'start').mockResolvedValue()
+      createServerSpy.mockResolvedValueOnce(server)
+
       server = await startServerImport.startServer()
 
       expect(createServerSpy).toHaveBeenCalled()
       expect(hapiServerSpy).toHaveBeenCalled()
+      expect(server.start).toHaveBeenCalled()
 
       const { result, statusCode } = await server.inject({
         method: 'GET',
@@ -48,7 +54,7 @@ describe('#startServer', () => {
 
   describe('When server start fails', () => {
     test('Should log failed startup message', async () => {
-      createServerSpy.mockRejectedValue(new Error('Server failed to start'))
+      createServerSpy.mockRejectedValueOnce(new Error('Server failed to start'))
 
       await expect(startServerImport.startServer()).rejects.toThrow(
         'Server failed to start'

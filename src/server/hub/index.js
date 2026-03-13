@@ -32,7 +32,7 @@ export const hub = {
         },
         {
           method: 'GET',
-          path: '/hub/{hub}/{service}/{filename}',
+          path: '/hub/{hub}/{service}/docs',
           ...docsFetcherController
         }
       ])
