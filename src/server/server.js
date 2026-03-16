@@ -64,15 +64,6 @@ export async function createServer() {
     }
   })
 
-  const entityCache = server.cache({
-    cache: 'entity_cache',
-    segment: 'entity',
-    expiresIn: 1000 * 60 * 60
-  })
-
-  server.decorate('server', 'entityCache', entityCache)
-  server.decorate('request', 'entityCache', entityCache)
-
   await server.register([
     requestLogger,
     requestTracing,

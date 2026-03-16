@@ -1,3 +1,5 @@
+import '../stylesheets/application.scss'
+
 import {
   createAll,
   Button,

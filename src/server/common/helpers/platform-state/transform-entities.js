@@ -1,7 +1,7 @@
 /**
  *
  * @param {{}} entities
- * @return {{id: string, documentUrl: string, docs: {url: string, doc_type: string}, urls: Object<string, string> }}
+ * @return {{id: string, documentUrl: string, docs: {url: string, doc_type: string, internal: boolean, external:boolean}, urls: Object<string, string> }}
  */
 export function extractDocUrlsFromEntities(entities) {
   const output = {}
@@ -18,7 +18,6 @@ export function extractDocUrlsFromEntities(entities) {
 
       // Currently we only support openapi (where we pull the json/yml and render it)
       // We may support other kinds of docs (e.g. external/self-hosted where we link to a public url)
-      console.log(docs, urlsByType)
 
       if (docs.doc_type === 'openapi' && urlsByType.internal) {
         const relativeDocUrl = docs.url
@@ -29,7 +28,13 @@ export function extractDocUrlsFromEntities(entities) {
           relativeDocUrl,
           `${protocol}://${urlsByType.internal}`
         )
-        output[name] = { id: name, documentUrl, docs, urls: urlsByType }
+        output[name] = {
+          id: name,
+          documentUrl,
+          docs,
+          urls: urlsByType,
+          teams: data.metadata.teams ?? []
+        }
       }
 
       // TODO: log why we're skipping it.

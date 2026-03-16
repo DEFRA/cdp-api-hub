@@ -1,6 +1,0 @@
-{% extends 'layouts/page.njk' %}
-
-{% block fullWidthAfterContent %}
-  <div id="docs" data-scalar-config="{{ scalarConfig | dump | escape }}"></div>
-  <script type="module" src="{{ getAssetPath('scalar.js') }}"></script>
-{% endblock %}

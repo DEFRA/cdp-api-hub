@@ -47,6 +47,12 @@ export const config = convict({
     format: String,
     default: 'cdp-api-hub'
   },
+  cdpEnvironment: {
+    doc: 'CDP Environment',
+    format: String,
+    default: '',
+    env: 'ENVIRONMENT'
+  },
   root: {
     doc: 'Project root',
     format: String,

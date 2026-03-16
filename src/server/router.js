@@ -1,7 +1,7 @@
 import inert from '@hapi/inert'
 import { health } from './health/index.js'
 import { serveStaticFiles } from './common/helpers/serve-static-files.js'
-import { hub } from './hub/index.js'
+import { hub } from './api-hub/index.js'
 
 export const router = {
   plugin: {
