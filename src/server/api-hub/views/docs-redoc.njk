@@ -1,0 +1,6 @@
+{% extends 'layouts/page.njk' %}
+
+{%  block fullWidthAfterContent %}
+  <redoc spec-url='{{ docUrl }}'></redoc>
+  <script type="module" src="{{ getAssetPath('redoc.js') }}"></script>
+{%  endblock %}

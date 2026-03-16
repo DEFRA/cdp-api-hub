@@ -25,7 +25,7 @@ describe('context and cache', () => {
   describe('#context', () => {
     const mockRequest = { path: '/' }
 
-    describe('When webpack manifest file read succeeds', () => {
+    describe('When asset manifest file read succeeds', () => {
       let contextImport
       let contextResult
 
@@ -82,7 +82,7 @@ describe('context and cache', () => {
       })
     })
 
-    describe('When webpack manifest file read fails', () => {
+    describe('When asset manifest file read fails', () => {
       let contextImport
 
       beforeAll(async () => {
@@ -95,9 +95,9 @@ describe('context and cache', () => {
         contextImport.context(mockRequest)
       })
 
-      test('Should log that the Webpack Manifest file is not available', () => {
+      test('Should log that the asset manifest file is not available', () => {
         expect(mockLoggerError).toHaveBeenCalledWith(
-          'Webpack assets-manifest.json not found'
+          'Asset assets-manifest.json not found'
         )
       })
     })
@@ -107,7 +107,7 @@ describe('context and cache', () => {
     const mockRequest = { path: '/' }
     let contextResult
 
-    describe('Webpack manifest file cache', () => {
+    describe('Asset manifest file cache', () => {
       let contextImport
 
       beforeAll(async () => {

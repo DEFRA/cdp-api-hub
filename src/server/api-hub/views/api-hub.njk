@@ -1,0 +1,57 @@
+{% extends 'layouts/page.njk' %}
+
+{% block content %}
+  {{ appHeading({
+    text: heading,
+    caption: caption
+  }) }}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="govuk-body" data-testid="app-page-body">
+        {%  for api in apis %}
+          <div class="api">
+            <h2>{{ api.id }}</h2>
+            <dl class="govuk-summary-list app-summary-list govuk-!-margin-bottom-0" data-testid="service-summary">
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Link
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <a class="govuk-link" href="/hub/{{ hub }}/{{ api.id }}/view/redoc">View API Docs</a>
+                </dd>
+              </div>
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Format
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <strong class="govuk-tag app-tag govuk-tag--blue" data-testid="govuk-tag">
+                    {{ api.docs.doc_type }}
+                  </strong>
+                </dd>
+              </div>
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Team
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <ul class="govuk-list">
+                    {%  for team in api.teams %}
+                    <li>{{ team }}</li>
+                    {%  endfor %}
+                  </ul>
+                </dd>
+              </div>
+
+            </dl>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

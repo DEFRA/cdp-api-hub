@@ -24,24 +24,33 @@
     useTudorCrown: true
   }) }}
 
-  {{ govukServiceNavigation({
-    navigation: navigation
-  }) }}
 {% endblock %}
 
 {% block pageTitle %}
   {{ pageTitle }} | {{ serviceName }}
 {% endblock %}
 
-{% block beforeContent %}
-  {% if breadcrumbs.length > 1 %}
-    {{ govukBreadcrumbs({
-      items: breadcrumbs
-    }) }}
-  {% endif %}
-{% endblock %}
+{% block main %}
+  {% block fullWidthBeforeContent %}{% endblock %}
 
-{% block content %}{% endblock %}
+  <div class="govuk-width-container {%- if containerClasses %} {{ containerClasses }}{% endif %}">
+    {% block beforeContent %}
+      {% if breadcrumbs.length > 1 %}
+        {{ govukBreadcrumbs({
+          items: breadcrumbs
+        }) }}
+      {% endif %}
+    {% endblock %}
+
+    <main class="govuk-main-wrapper {%- if mainClasses %} {{ mainClasses }}{% endif %}" id="main-content" {%- if mainLang %} lang="{{ mainLang }}"{% endif %}>
+      {% block content %}{% endblock %}
+    </main>
+
+    {% block afterContent %}{% endblock %}
+  </div>
+
+  {% block fullWidthAfterContent %}{% endblock %}
+{% endblock %}
 
 {% block footer %}
   {{ govukFooter({

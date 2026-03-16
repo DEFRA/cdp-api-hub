@@ -6,6 +6,7 @@ import convictFormatWithValidator from 'convict-format-with-validator'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const tenMinutesMs = 600000
 const fourHoursMs = 14400000
 const oneWeekMs = 604800000
 
@@ -45,6 +46,12 @@ export const config = convict({
     doc: 'Applications Service Name',
     format: String,
     default: 'cdp-api-hub'
+  },
+  cdpEnvironment: {
+    doc: 'CDP Environment',
+    format: String,
+    default: '',
+    env: 'ENVIRONMENT'
   },
   root: {
     doc: 'Project root',
@@ -212,6 +219,59 @@ export const config = convict({
       format: String,
       default: 'x-cdp-request-id',
       env: 'TRACING_HEADER'
+    }
+  },
+  aws: {
+    region: {
+      doc: 'AWS region',
+      format: String,
+      default: 'eu-west-2',
+      env: 'AWS_REGION'
+    },
+    s3: {
+      endpoint: {
+        doc: 'AWS S3 endpoint',
+        format: String,
+        default: 'http://localhost:4566',
+        env: 'S3_ENDPOINT'
+      },
+      forcePathStyle: {
+        doc: 'AWS S3 forcePathStyle option',
+        format: Boolean,
+        default: !isProduction
+      }
+    },
+    dynamoDb: {
+      endpoint: {
+        doc: 'AWS DynamoDB endpoint',
+        format: String,
+        default: 'http://localhost:4566',
+        env: 'DYNAMODB_ENDPOINT'
+      }
+    }
+  },
+  platformState: {
+    cache: {
+      ttl: {
+        doc: 'How long to cache the entity data for',
+        format: Number,
+        default: tenMinutesMs,
+        env: 'PLATFORM_STATE_CACHE_TTL'
+      }
+    },
+    s3: {
+      bucket: {
+        doc: 'S3 bucket containing the entities JSON file',
+        format: String,
+        default: 'cdp-platform-state',
+        env: 'PLATFORM_STATE_S3_BUCKET'
+      },
+      key: {
+        doc: 'S3 key for the entities JSON file',
+        format: String,
+        default: '_all/entities.json',
+        env: 'PLATFORM_STATE_S3_KEY'
+      }
     }
   }
 })
