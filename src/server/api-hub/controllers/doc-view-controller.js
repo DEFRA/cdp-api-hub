@@ -1,6 +1,7 @@
-import { hubSchema } from '../helpers/schema.js'
+import { hubSchema } from '../helpers/schemas.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import Joi from 'joi'
+import { DocTypes } from '../helpers/constants.js'
 
 export const redocViewController = {
   options: {
@@ -20,7 +21,7 @@ export const redocViewController = {
     )
     const apiDocs = state[service]
 
-    if (!apiDocs) {
+    if (!apiDocs || apiDocs.docType !== DocTypes.openapi) {
       return h
         .response({
           message: 'Not found'
@@ -28,7 +29,7 @@ export const redocViewController = {
         .code(statusCodes.notFound)
     }
 
-    if (apiDocs.docs[hub] !== true) {
+    if (apiDocs[hub] !== true) {
       return h
         .response({
           message: 'Not found'

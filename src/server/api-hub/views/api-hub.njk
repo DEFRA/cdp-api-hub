@@ -19,7 +19,7 @@
                   Link
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  <a class="govuk-link" href="/hub/{{ hub }}/{{ api.id }}/view/redoc">View API Docs</a>
+                  <a class="govuk-link" href="{{ api.link }}">View API Docs</a>
                 </dd>
               </div>
 
@@ -29,7 +29,7 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                   <strong class="govuk-tag app-tag govuk-tag--blue" data-testid="govuk-tag">
-                    {{ api.docs.doc_type }}
+                    {{ api.docType }}
                   </strong>
                 </dd>
               </div>

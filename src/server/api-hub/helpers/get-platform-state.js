@@ -1,15 +1,14 @@
 import { GetObjectCommand } from '@aws-sdk/client-s3'
-import { config } from '../../../../config/config.js'
+import { config } from '../../../config/config.js'
 
-import { extractDocUrlsFromEntities } from './transform-entities.js'
-import { tenantSchema } from './schemas.js'
-
+import { transformEntities } from './transform-entities.js'
 /**
  * Provides a list of all entities in the environment that have API docs.
  * @param s3Client
- * @return {Promise<{id: string, documentUrl: string, docs: {url: string, doc_type: string, internal: boolean, external: boolean}, urls: Object<string, string>}>}
+ * @param logger
+ * @return {Promise<{ id: string, docType: string, internal: bool, external:bool, teams: string[]}>}
  */
-export async function getPlatformState(s3Client) {
+export async function getPlatformState(s3Client, logger) {
   const bucket = config.get('platformState.s3.bucket')
   const key = config.get('platformState.s3.key')
 
@@ -23,10 +22,7 @@ export async function getPlatformState(s3Client) {
   const body = await readS3Body(response.Body)
   const entities = JSON.parse(body)
 
-  const { error, value } = tenantSchema.validate(entities)
-  console.log(error)
-
-  return extractDocUrlsFromEntities(value)
+  return transformEntities(entities, logger)
 }
 
 async function readS3Body(body) {
