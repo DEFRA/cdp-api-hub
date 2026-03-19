@@ -1,4 +1,4 @@
-import { hubSchema } from '../helpers/schema.js'
+import { hubSchema } from '../helpers/schemas.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 
 import Undici from 'undici'
@@ -30,8 +30,8 @@ export const apiDocsProxyController = {
         .code(statusCodes.notFound)
     }
 
-    // Check api can be viewed from this hub
-    if (apiDocs.docs[hub] !== true) {
+    // Check api can be viewed from this hub and is an OpenAPI document
+    if (apiDocs.docType !== 'openapi' || apiDocs[hub] !== true) {
       return h
         .response({
           message: 'Not found'
@@ -39,10 +39,11 @@ export const apiDocsProxyController = {
         .code(statusCodes.notFound)
     }
 
-    const docsUrl = apiDocs.documentUrl
-    request.logger.info(`getting docs from ${docsUrl}`)
+    request.logger.info(`getting docs from ${apiDocs.documentUrl}`)
 
-    const { statusCode, headers, body } = await Undici.request(docsUrl)
+    const { statusCode, headers, body } = await Undici.request(
+      apiDocs.documentUrl
+    )
     // TODO: cache this?
     return h.response(body).code(statusCode).type(headers['content-type'])
   }

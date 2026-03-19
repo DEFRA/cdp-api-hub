@@ -16,7 +16,7 @@ import { secureContext } from '@defra/hapi-secure-context'
 import { contentSecurityPolicy } from './common/helpers/content-security-policy.js'
 import { metrics } from '@defra/cdp-metrics'
 import { s3Client } from './common/helpers/s3-client.js'
-import { getPlatformState } from './common/helpers/platform-state/get-platform-state.js'
+import { getPlatformState } from './api-hub/helpers/get-platform-state.js'
 
 export async function createServer() {
   setupProxy()
@@ -53,10 +53,6 @@ export async function createServer() {
       {
         name: config.get('session.cache.name'),
         engine: getCacheEngine(config.get('session.cache.engine'))
-      },
-      {
-        name: 'entity_cache',
-        engine: getCacheEngine(config.get('session.cache.engine'))
       }
     ],
     state: {
@@ -80,13 +76,13 @@ export async function createServer() {
 
   server.method({
     name: 'getPlatformState',
-    method: (s3Client) => getPlatformState(s3Client),
+    method: (s3Client) => getPlatformState(s3Client, server.logger),
     options: {
       cache: {
         expiresIn: config.get('platformState.cache.ttl'),
         generateTimeout: 3000,
         staleIn: config.get('platformState.cache.ttl') / 2,
-        staleTimeout: 100
+        staleTimeout: 300
       },
       generateKey(...args) {
         return 'platform-state'
