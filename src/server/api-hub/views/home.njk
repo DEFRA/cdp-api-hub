@@ -1,0 +1,22 @@
+{% extends 'layouts/page.njk' %}
+
+{% block content %}
+  {{ appHeading({
+    text: heading,
+    caption: caption
+  }) }}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="govuk-body" data-testid="app-page-body">
+        <ul class="govuk-list">
+          <li><a href="/hub/internal">Internal APIs</a></li>
+          {% if enableExternalHub %}
+          <li><a href="/hub/external">External APIs</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

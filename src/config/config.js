@@ -238,7 +238,8 @@ export const config = convict({
       forcePathStyle: {
         doc: 'AWS S3 forcePathStyle option',
         format: Boolean,
-        default: !isProduction
+        default: !isProduction,
+        env: 'S3_FORCE_PATH_STYLE'
       }
     },
     dynamoDb: {
@@ -273,6 +274,12 @@ export const config = convict({
         env: 'PLATFORM_STATE_S3_KEY'
       }
     }
+  },
+  enableExternalHub: {
+    doc: 'Show external API hub enabled',
+    format: Boolean,
+    default: false,
+    env: 'ENABLE_EXTERNAL_HUB'
   }
 })
 

@@ -1,0 +1,25 @@
+{
+  "created": "2026-03-18T15:09:46.289757+00:00",
+  "version": 1,
+  "tenants": {
+    "cdp-portal-backend": {
+      "tenant": {
+        "urls": {
+          "localhost:5094": {
+            "type": "internal",
+            "enabled": false,
+            "shuttered": false
+          }
+        }
+      },
+      "metadata": {
+        "teams": ["platform"],
+        "api_docs": {
+          "internal": true,
+          "url": "/openapi/v1.json",
+          "api_type": "openapi"
+        }
+      }
+    }
+  }
+}

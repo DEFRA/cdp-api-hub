@@ -1,29 +1,11 @@
 # cdp-api-hub
 
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_cdp-api-hub&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=DEFRA_cdp-api-hub)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_cdp-api-hub&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DEFRA_cdp-api-hub)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_cdp-api-hub&metric=coverage)](https://sonarcloud.io/summary/new_code?id=DEFRA_cdp-api-hub)
-
-Core delivery platform Node.js Frontend Template.
+Frontend for listing internal and external APIs on the platform
 
 - [Requirements](#requirements)
   - [Node.js](#nodejs)
-- [Server-side Caching](#server-side-caching)
-- [Redis](#redis)
+- [Config](#config)
 - [Local Development](#local-development)
-  - [Setup](#setup)
-  - [Development](#development)
-  - [Production](#production)
-  - [Npm scripts](#npm-scripts)
-  - [Update dependencies](#update-dependencies)
-  - [Formatting](#formatting)
-    - [Windows prettier issue](#windows-prettier-issue)
-- [Docker](#docker)
-  - [Development image](#development-image)
-  - [Production image](#production-image)
-  - [Docker Compose](#docker-compose)
-  - [Dependabot](#dependabot)
-  - [SonarCloud](#sonarcloud)
 - [Licence](#licence)
   - [About the licence](#about-the-licence)
 
@@ -41,159 +23,62 @@ cd cdp-api-hub
 nvm use
 ```
 
-## Server-side Caching
+## Config
 
-We use Catbox for server-side caching. By default the service will use CatboxRedis when deployed and CatboxMemory for
-local development.
-You can override the default behaviour by setting the `SESSION_CACHE_ENGINE` environment variable to either `redis` or
-`memory`.
+The CDP API hub uses the standard CDP frontend config setting plus these additonal ones:
 
-Please note: CatboxMemory (`memory`) is _not_ suitable for production use! The cache will not be shared between each
-instance of the service and it will not persist between restarts.
+`ENABLE_EXTERNAL_HUB` - Lists the external API hub if true
+`PLATFORM_STATE_S3_BUCKET` - S3 bucket that holds the platform state config
+`PLATFORM_STATE_CACHE_TTL` - How long to cache the platform state for
 
-## Redis
+## How the service works
 
-Redis is an in-memory key-value store. Every instance of a service has access to the same Redis key-value store similar
-to how services might have a database (or MongoDB). All frontend services are given access to a namespaced prefixed that
-matches the service name. e.g. `my-service` will have access to everything in Redis that is prefixed with `my-service`.
+The API works by reading the `entities.json` from platform state bucket in the environment its running in.
+The platform state bucket is populate by the `publish-platform-state` lambda, which uploads a copy of the entity data that normally gets sent to portal.
 
-If your service does not require a session cache to be shared between instances or if you don't require Redis, you can
-disable setting `SESSION_CACHE_ENGINE=false` or changing the default value in `src/config/index.js`.
+The service reads this state file, extracts all the entities that have `api_docs` metadata available and uses this to build a list of APIs in that environment.
+It also uses the service's URL data to construct the full path to the API.
 
-## Proxy
-
-We are using forward-proxy which is set up by default. To make use of this: `import { fetch } from 'undici'` then
-because of the `setGlobalDispatcher(new ProxyAgent(proxyUrl))` calls will use the ProxyAgent Dispatcher
-
-If you are not using Wreck, Axios or Undici or a similar http that uses `Request`. Then you may have to provide the
-proxy dispatcher:
-
-To add the dispatcher to your own client:
-
-```javascript
-import { ProxyAgent } from 'undici'
-
-return await fetch(url, {
-  dispatcher: new ProxyAgent({
-    uri: proxyUrl,
-    keepAliveTimeout: 10,
-    keepAliveMaxTimeout: 10
-  })
-})
-```
+It supports two kinds of API docs, `openapi` (i.e. swagger) and `hosted` (a direct link to an external site).
+For OpenAPI docs, it will render them using [Redoc](https://redocly.github.io/) where as `hosted` docs are just direct links.
 
 ## Local Development
 
-### Setup
+1. Create S3 bucket
+   The docker compose file will create a local platform state bucket (or if you already have localstack or similar running, you can just add one using `s3 mb s3://cdp-platform-state`).
 
-Install application dependencies:
+2. Add \_all/entities.json
+   You can either take a copy from an existing environment or upload a minimal one.
 
-```bash
-npm install
+```json
+{
+  "created": "2026-03-18T15:09:46.289757+00:00",
+  "version": 1,
+  "tenants": {
+    "cdp-portal-backend": {
+      "tenant": {
+        "urls": {
+          "localhost:5094": {
+            "type": "internal",
+            "enabled": false,
+            "shuttered": false
+          }
+        }
+      },
+      "metadata": {
+        "teams": ["platform"],
+        "api_docs": {
+          "internal": true,
+          "url": "/openapi/v1.json",
+          "api_type": "openapi"
+        }
+      }
+    }
+  }
+}
 ```
 
-### Development
-
-To run the application in `development` mode run:
-
-```bash
-npm run dev
-```
-
-### Production
-
-To mimic the application running in `production` mode locally run:
-
-```bash
-npm start
-```
-
-### Npm scripts
-
-All available Npm scripts can be seen in [package.json](./package.json)
-To view them in your command line run:
-
-```bash
-npm run
-```
-
-### Update dependencies
-
-To update dependencies use [npm-check-updates](https://github.com/raineorshine/npm-check-updates):
-
-> The following script is a good start. Check out all the options on
-> the [npm-check-updates](https://github.com/raineorshine/npm-check-updates)
-
-```bash
-ncu --interactive --format group
-```
-
-### Formatting
-
-#### Windows prettier issue
-
-If you are having issues with formatting of line breaks on Windows update your global git config by running:
-
-```bash
-git config --global core.autocrlf false
-```
-
-## Docker
-
-### Development image
-
-> [!TIP]
-> For Apple Silicon users, you may need to add `--platform linux/amd64` to the `docker run` command to ensure
-> compatibility fEx: `docker build --platform=linux/arm64 --no-cache --tag cdp-api-hub`
-
-Build:
-
-```bash
-docker build --target development --no-cache --tag cdp-api-hub:development .
-```
-
-Run:
-
-```bash
-docker run -p 3000:3000 cdp-api-hub:development
-```
-
-### Production image
-
-Build:
-
-```bash
-docker build --no-cache --tag cdp-api-hub .
-```
-
-Run:
-
-```bash
-docker run -p 3000:3000 cdp-api-hub
-```
-
-### Docker Compose
-
-A local environment with:
-
-- Localstack for AWS services (S3, SQS)
-- Redis
-- MongoDB
-- This service.
-- A commented out backend example.
-
-```bash
-docker compose up --build -d
-```
-
-### Dependabot
-
-We have added an example dependabot configuration file to the repository. You can enable it by renaming
-the [.github/example.dependabot.yml](.github/example.dependabot.yml) to `.github/dependabot.yml`
-
-### SonarCloud
-
-Instructions for setting up SonarCloud can be found in [sonar-project.properties](./sonar-project.properties).
+See the docs on api_hub for how the set up the `api_docs` metadata.
 
 ## Licence
 
