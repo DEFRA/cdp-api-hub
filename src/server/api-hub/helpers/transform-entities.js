@@ -12,7 +12,6 @@ export function transformEntities(entities, logger) {
   Object.entries(entities.tenants).forEach(([name, data]) => {
     if (data && data?.metadata?.api_docs?.url) {
       const metadataApiDocs = data.metadata.api_docs
-      console.log(metadataApiDocs)
 
       // Re-arrange urls by type
       const urlsByType = {}
@@ -30,9 +29,8 @@ export function transformEntities(entities, logger) {
         documentUrl: ''
       }
 
-      console.log('record', record)
-      // Handle OpenAPI docs
       if (record.docType === DocTypes.openapi && urlsByType.internal) {
+        // Handle OpenAPI docs
         const relativeDocUrl = metadataApiDocs.url
         const baseUrl = urlsByType.internal
         const protocol = baseUrl.startsWith('localhost') ? 'http' : 'https'
@@ -42,7 +40,11 @@ export function transformEntities(entities, logger) {
           `${protocol}://${urlsByType.internal}`
         )
         output[name] = record
-      } else if (record.docType === DocTypes.hosted && isAbsolute(metadataApiDocs.url)) {
+      } else if (
+        // Handle hosted docs
+        record.docType === DocTypes.hosted &&
+        isAbsolute(metadataApiDocs.url)
+      ) {
         record.documentUrl = metadataApiDocs.url
         output[name] = record
       } else {

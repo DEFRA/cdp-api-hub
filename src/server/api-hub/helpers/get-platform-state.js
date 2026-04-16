@@ -22,10 +22,7 @@ export async function getPlatformState(s3Client, logger) {
 
   const body = await readS3Body(response.Body)
   const parsedJson = JSON.parse(body)
-
   const docUrls = transformEntities(parsedJson, logger)
-
-  console.log("docurls", docUrls)
   return await validateUrls(docUrls)
 }
 

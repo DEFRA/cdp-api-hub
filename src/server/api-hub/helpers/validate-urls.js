@@ -1,11 +1,11 @@
 /**
- *
+ * Checks if the url is reachable.
  * @param {Map<string, { id: string, documentUrl: string, docType: string, internal: boolean, external:boolean, teams: string[]}>} links
  * @return {Promise<Awaited<Map<string, {id: string, documentUrl: string, docType: string, internal: boolean, external: boolean, teams: string[]}>>>}
  */
 export async function validateUrls(links) {
   const entries = Object.entries(links)
-  console.log("links", links)
+
   await Promise.all(
     entries.map(async ([key, link]) => {
       try {
@@ -14,7 +14,7 @@ export async function validateUrls(links) {
             method: 'HEAD',
             signal: AbortSignal.timeout(1500)
           })
-          link.enabled = res.ok || [400, 401, 403, 405].includes(res.status)
+          link.enabled = res.ok || [400, 401, 403, 405].includes(res.status) // Not all services support HEAD so this is fairly permissive
         } else {
           link.enabled = true
         }
