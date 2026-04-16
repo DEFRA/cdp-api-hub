@@ -17,7 +17,7 @@
         "api_docs": {
           "internal": true,
           "url": "/openapi/v1.json",
-          "api_type": "openapi"
+          "doc_type": "openapi"
         }
       }
     }

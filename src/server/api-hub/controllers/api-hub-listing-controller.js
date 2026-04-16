@@ -18,6 +18,7 @@ export const hubListingsController = {
     const state = await request.server.methods.getPlatformState(
       request.s3Client
     )
+    console.log(state)
 
     // Only show APIs that are flagged as belonging to this hub
     const apis = Object.values(state)

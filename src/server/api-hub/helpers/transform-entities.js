@@ -11,7 +11,8 @@ export function transformEntities(entities, logger) {
 
   Object.entries(entities.tenants).forEach(([name, data]) => {
     if (data && data?.metadata?.api_docs?.url) {
-      const docs = data.metadata.api_docs
+      const metadataApiDocs = data.metadata.api_docs
+      console.log(metadataApiDocs)
 
       // Re-arrange urls by type
       const urlsByType = {}
@@ -19,18 +20,20 @@ export function transformEntities(entities, logger) {
         urlsByType[info.type] = url
       })
 
+      // Output structure
       const record = {
         id: name,
-        docType: docs.doc_type,
-        internal: docs.internal,
-        external: docs.external,
-        teams: data.metadata.teams ?? [],
+        docType: metadataApiDocs.doc_type,
+        internal: metadataApiDocs.internal,
+        external: metadataApiDocs.external,
+        teams: data.metadata?.teams ?? [],
         documentUrl: ''
       }
 
+      console.log('record', record)
       // Handle OpenAPI docs
       if (record.docType === DocTypes.openapi && urlsByType.internal) {
-        const relativeDocUrl = docs.url
+        const relativeDocUrl = metadataApiDocs.url
         const baseUrl = urlsByType.internal
         const protocol = baseUrl.startsWith('localhost') ? 'http' : 'https'
 
@@ -39,8 +42,8 @@ export function transformEntities(entities, logger) {
           `${protocol}://${urlsByType.internal}`
         )
         output[name] = record
-      } else if (record.docType === DocTypes.hosted && isAbsolute(docs.url)) {
-        record.documentUrl = docs.url
+      } else if (record.docType === DocTypes.hosted && isAbsolute(metadataApiDocs.url)) {
+        record.documentUrl = metadataApiDocs.url
         output[name] = record
       } else {
         logger.warn(`unable to add docs for ${name}`)

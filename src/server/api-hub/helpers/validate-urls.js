@@ -5,7 +5,7 @@
  */
 export async function validateUrls(links) {
   const entries = Object.entries(links)
-
+  console.log("links", links)
   await Promise.all(
     entries.map(async ([key, link]) => {
       try {
@@ -14,7 +14,7 @@ export async function validateUrls(links) {
             method: 'HEAD',
             signal: AbortSignal.timeout(1500)
           })
-          link.enabled = res.ok
+          link.enabled = res.ok || [400, 401, 403, 405].includes(res.status)
         } else {
           link.enabled = true
         }
