@@ -5,7 +5,7 @@ import { DocTypes } from './constants.js'
  * extracts just the api document data from the complete entity set.
  * @param {{}} entities
  * @param {{}} logger
- * @return {{ id: string, docType: string, internal: bool, external:bool, teams: string[]}}
+ * @return {{ id: string, documentUrl: string, docType: string, internal: bool, external:bool, teams: string[]}[]}
  */
 export function transformEntities(entities, logger) {
   const output = {}
