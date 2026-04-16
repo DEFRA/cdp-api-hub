@@ -1,11 +1,10 @@
 import { DocTypes } from './constants.js'
 
 /**
- * Filters out entities that have API docs configured and
- * extracts just the api document data from the complete entity set.
- * @param {{}} entities
- * @param {{}} logger
- * @return {{ id: string, documentUrl: string, docType: string, internal: bool, external:bool, teams: string[]}[]}
+ *
+ * @param entities
+ * @param logger
+ * @return {{}}
  */
 export function transformEntities(entities, logger) {
   const output = {}
@@ -25,11 +24,12 @@ export function transformEntities(entities, logger) {
         docType: docs.doc_type,
         internal: docs.internal,
         external: docs.external,
-        teams: data.metadata.teams ?? []
+        teams: data.metadata.teams ?? [],
+        documentUrl: ''
       }
 
       // Handle OpenAPI docs
-      if (docs.doc_type === DocTypes.openapi && urlsByType.internal) {
+      if (record.docType === DocTypes.openapi && urlsByType.internal) {
         const relativeDocUrl = docs.url
         const baseUrl = urlsByType.internal
         const protocol = baseUrl.startsWith('localhost') ? 'http' : 'https'
@@ -39,7 +39,7 @@ export function transformEntities(entities, logger) {
           `${protocol}://${urlsByType.internal}`
         )
         output[name] = record
-      } else if (docs.doc_type === DocTypes.hosted && isAbsolute(docs.url)) {
+      } else if (record.docType === DocTypes.hosted && isAbsolute(docs.url)) {
         record.documentUrl = docs.url
         output[name] = record
       } else {

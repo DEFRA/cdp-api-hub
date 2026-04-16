@@ -1,11 +1,13 @@
 /**
  *
- * @param {{ id: string, documentUrl: string, docType: string, internal: boolean, external:boolean, teams: string[]}[]} entities
- * @return {Promise<Awaited<{id: string, documentUrl: string, docType: string, internal: boolean, external: boolean, teams: string[]}>[]>}
+ * @param {Map<string, { id: string, documentUrl: string, docType: string, internal: boolean, external:boolean, teams: string[]}>} links
+ * @return {Promise<Awaited<Map<string, {id: string, documentUrl: string, docType: string, internal: boolean, external: boolean, teams: string[]}>>>}
  */
-export async function validateUrls(entities) {
-  return Promise.all(
-    entities.map(async (link) => {
+export async function validateUrls(links) {
+  const entries = Object.entries(links)
+
+  await Promise.all(
+    entries.map(async ([key, link]) => {
       try {
         if (link.docType === 'openapi' && link.internal === true) {
           const res = await fetch(link.documentUrl, {
@@ -19,7 +21,8 @@ export async function validateUrls(entities) {
       } catch {
         link.enabled = false
       }
-      return link
     })
   )
+
+  return links
 }
