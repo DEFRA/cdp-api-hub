@@ -23,7 +23,7 @@ describe('#errors', () => {
     })
 
     expect(result).toEqual(
-      expect.stringContaining('Page not found | cdp-api-hub')
+      expect.stringContaining('Page not found | CDP API Hub')
     )
     expect(statusCode).toBe(statusCodes.notFound)
   })
