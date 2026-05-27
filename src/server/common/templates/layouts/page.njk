@@ -24,6 +24,12 @@
     useTudorCrown: true
   }) }}
 
+  {{ govukServiceNavigation({
+    serviceName: serviceName,
+    serviceUrl: serviceUrl,
+    navigation: navigation
+  }) }}
+
 {% endblock %}
 
 {% block pageTitle %}
