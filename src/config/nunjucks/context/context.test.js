@@ -58,9 +58,13 @@ describe('context and cache', () => {
               current: false,
               text: 'About',
               href: '/about'
+            },
+            {
+              href: '/sign-in',
+              text: 'Sign in'
             }
           ],
-          serviceName: 'cdp-api-hub',
+          serviceName: 'CDP API Hub',
           serviceUrl: '/'
         })
       })
@@ -147,9 +151,13 @@ describe('context and cache', () => {
               current: false,
               text: 'About',
               href: '/about'
+            },
+            {
+              href: '/sign-in',
+              text: 'Sign in'
             }
           ],
-          serviceName: 'cdp-api-hub',
+          serviceName: 'CDP API Hub',
           serviceUrl: '/'
         })
       })
