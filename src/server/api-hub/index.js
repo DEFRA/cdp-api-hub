@@ -2,6 +2,7 @@ import { hubListingsController } from './controllers/api-hub-listing-controller.
 import { redocViewController } from './controllers/doc-view-controller.js'
 import { apiDocsProxyController } from './controllers/api-docs-proxy-controller.js'
 import { apiHubController } from './controllers/api-hub-controller.js'
+import { hubServiceController } from './controllers/api-hub-service-controller.js'
 
 export const hub = {
   plugin: {
@@ -18,6 +19,11 @@ export const hub = {
           method: 'GET',
           path: '/hub/{hub}',
           ...hubListingsController
+        },
+        {
+          method: 'GET',
+          path: '/hub/{hub}/{service}',
+          ...hubServiceController
         },
         {
           method: 'GET',

@@ -1,0 +1,66 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block content %}
+  {{ appHeading({
+    text: heading,
+    caption: caption
+  }) }}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="govuk-body" data-testid="app-page-body">
+
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "Service"
+              },
+              value: {
+                text: api.id
+              }
+            },
+            {
+              key: {
+                text: "Team"
+              },
+                value: {
+                html: api.teams | join("<br>")
+              }
+            },
+            {
+              key: {
+                text: "Format"
+              },
+              value: {
+                html: "<strong class=\"govuk-tag app-tag govuk-tag--blue\" data-testid=\"govuk-tag\">" + api.docType + "</strong>"
+              },
+              actions: {
+              items: [
+                {
+                  href: "Contact details",
+                  text: "View Documentation"
+                }
+              ]
+            }
+            }
+          ]
+        }) }}
+
+      </div>
+    </div>
+  </div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <div class="govuk-body" data-testid="app-page-body">
+      {%  if api.description %}
+        <h3>Description</h3>
+        <p>{{ api.description | safe }}</p>
+      {%  endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

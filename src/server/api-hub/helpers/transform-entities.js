@@ -26,7 +26,8 @@ export function transformEntities(entities, logger) {
         internal: metadataApiDocs.internal,
         external: metadataApiDocs.external,
         teams: data.metadata?.teams ?? [],
-        documentUrl: ''
+        documentUrl: '',
+        description: metadataApiDocs.description
       }
 
       if (record.docType === DocTypes.openapi && urlsByType.internal) {

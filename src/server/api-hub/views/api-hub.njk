@@ -24,7 +24,9 @@
 
           {%  for api in apis %}
           <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">{{ api.id }}</th>
+            <th scope="row" class="govuk-table__header">
+              <a class="govuk-link" href="{{ api.serviceLink }}">{{ api.id }}</a>
+            </th>
             <td class="govuk-table__header">
               <ul class="govuk-list">
                 {% for team in api.teams %}<li>{{ team }}</li>{% endfor %}
