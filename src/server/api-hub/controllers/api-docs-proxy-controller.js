@@ -1,7 +1,7 @@
 import { hubSchema } from '../helpers/schemas.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 
-import Undici from 'undici'
+import { Readable } from 'node:stream'
 import Joi from 'joi'
 
 export const apiDocsProxyController = {
@@ -40,11 +40,12 @@ export const apiDocsProxyController = {
     }
 
     request.logger.info(`getting docs from ${apiDocs.documentUrl}`)
+    const response = await fetch(apiDocs.documentUrl)
 
-    const { statusCode, headers, body } = await Undici.request(
-      apiDocs.documentUrl
-    )
     // TODO: cache this?
-    return h.response(body).code(statusCode).type(headers['content-type'])
+    return h
+      .response(Readable.fromWeb(response.body))
+      .code(response.status)
+      .type(response.headers.get('content-type'))
   }
 }
