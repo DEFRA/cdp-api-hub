@@ -49,4 +49,26 @@ describe('validate-urls', () => {
     expect(result.b.enabled).toBe(false)
     expect(result.c.enabled).toBe(false)
   })
+
+  test('fallsback to GET if HEAD 404s', async () => {
+    const mockPool = agent.get('https://example.com')
+
+    mockPool.intercept({ path: '/api.json', method: 'HEAD' }).reply(404)
+    mockPool.intercept({ path: '/api.json', method: 'GET' }).reply(200)
+
+    const input = {
+      a: {
+        id: 'a',
+        docType: 'openapi',
+        internal: true,
+        external: false,
+        teams: [],
+        documentUrl: 'https://example.com/api.json'
+      }
+    }
+
+    const result = await validateUrls(input)
+
+    expect(result.a.enabled).toBe(true)
+  })
 })
