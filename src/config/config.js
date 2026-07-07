@@ -297,11 +297,11 @@ export const config = convict({
         nullable: true,
         default: null
       },
-      enableMocking: {
-        doc: 'Turns on OIDC mock support',
-        format: Boolean,
-        default: !isProduction,
-        env: 'AZURE_CREDENTIALS_ENABLE_MOCKING'
+      providerType: {
+        doc: 'Turns on OIDC provider type',
+        format: ['mock', 'cognito', 'web-identity'],
+        default: isProduction ? 'cognito' : 'mock',
+        env: 'AZURE_CREDENTIALS_PROVIDER_TYPE'
       }
     },
     oidc: {

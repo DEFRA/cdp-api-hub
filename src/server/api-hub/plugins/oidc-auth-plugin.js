@@ -2,7 +2,8 @@ import { config } from '../../../config/config.js'
 import {
   CognitoTokenProvider,
   hapiAuthOidcPlugin,
-  MockProvider
+  MockProvider,
+  WebIdentityTokenProvider
 } from '@defra/hapi-auth-oidc'
 
 const { oidc, cookieOptions, federatedCredentials } = config.get('auth')
@@ -15,12 +16,26 @@ const scope = [
   'user.read'
 ].join(' ')
 
-const authProvider = federatedCredentials.enableMocking
-  ? new MockProvider({})
-  : new CognitoTokenProvider({
-      poolId: federatedCredentials.identityPoolId,
-      logins: { 'cdp-api-hub-aad-access': 'cdp-api-hub' }
-    })
+function authProvider(providerType) {
+  switch (providerType) {
+    case 'mock':
+      return new MockProvider({})
+
+    case 'cognito':
+      return new CognitoTokenProvider({
+        poolId: federatedCredentials.identityPoolId,
+        logins: { 'cdp-api-hub-aad-access': 'cdp-api-hub' }
+      })
+
+    case 'web-identity':
+      return new WebIdentityTokenProvider({
+        audience: ['cdp-api-hub']
+      })
+
+    default:
+      throw new Error(`Unrecognised auth provider type: ${providerType}`)
+  }
+}
 
 export const authOidcPlugin = {
   plugin: hapiAuthOidcPlugin,
@@ -28,7 +43,7 @@ export const authOidcPlugin = {
     oidc: {
       ...oidc,
       scope,
-      authProvider
+      authProvider: authProvider(federatedCredentials.providerType)
     },
     cookieOptions
   }

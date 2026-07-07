@@ -7,7 +7,7 @@ const signOutController = {
     if (!userSession) {
       return h.redirect('/')
     }
-    const { discoveryUri, externalBaseUrl } = config.get('oidc')
+    const { discoveryUri, externalBaseUrl } = config.get('auth.oidc')
 
     const res = await fetch(discoveryUri)
     const payload = await res.json()
