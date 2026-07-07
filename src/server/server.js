@@ -7,7 +7,6 @@ import { config } from '../config/config.js'
 import { pulse } from './common/helpers/pulse.js'
 import { catchAll } from './common/helpers/errors.js'
 import { nunjucksConfig } from '../config/nunjucks/nunjucks.js'
-import { setupProxy } from './common/helpers/proxy/setup-proxy.js'
 import { requestTracing } from './common/helpers/request-tracing.js'
 import { requestLogger } from './common/helpers/logging/request-logger.js'
 import { sessionCache } from './common/helpers/session-cache/session-cache.js'
@@ -17,9 +16,11 @@ import { contentSecurityPolicy } from './common/helpers/content-security-policy.
 import { metrics } from '@defra/cdp-metrics'
 import { s3Client } from './common/helpers/s3-client.js'
 import { getPlatformState } from './api-hub/helpers/get-platform-state.js'
+import { authOidcPlugin } from './api-hub/plugins/oidc-auth-plugin.js'
+import { sessionCookie } from './api-hub/plugins/session-cookie.js'
+import { registerCachePlugin } from './api-hub/plugins/register-cache.js'
 
 export async function createServer() {
-  setupProxy()
   const server = hapi.server({
     host: config.get('host'),
     port: config.get('port'),
@@ -69,6 +70,9 @@ export async function createServer() {
     sessionCache,
     nunjucksConfig,
     Scooter,
+    sessionCookie,
+    { plugin: registerCachePlugin, options: config.get('session.cache') },
+    authOidcPlugin,
     contentSecurityPolicy,
     s3Client,
     router // Register all the controllers/routes defined in src/server/router.js
