@@ -287,14 +287,12 @@ export const config = convict({
     default: false,
     env: 'ENABLE_EXTERNAL_HUB'
   },
-<<<<<<< remove-status-check
   validateUrlTimeOut: {
     doc: 'Timeout for checking url is valid',
     format: Number,
     default: 2000,
     env: 'VALIDATE_URL_TIMEOUT'
-=======
-
+  },
   auth: {
     federatedCredentials: {
       identityPoolId: {
@@ -370,7 +368,6 @@ export const config = convict({
         env: 'OIDC_SAME_SITE'
       }
     }
->>>>>>> main
   }
 })
 
