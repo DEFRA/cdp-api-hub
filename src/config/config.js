@@ -287,7 +287,12 @@ export const config = convict({
     default: false,
     env: 'ENABLE_EXTERNAL_HUB'
   },
-
+  validateUrlTimeOut: {
+    doc: 'Timeout for checking url is valid',
+    format: Number,
+    default: 2000,
+    env: 'VALIDATE_URL_TIMEOUT'
+  },
   auth: {
     federatedCredentials: {
       identityPoolId: {

@@ -2,12 +2,12 @@ import { GetObjectCommand } from '@aws-sdk/client-s3'
 import { config } from '../../../config/config.js'
 
 import { transformEntities } from './transform-entities.js'
-import { validateUrls } from './validate-urls.js'
+
 /**
  * Provides a list of all entities in the environment that have API docs.
  * @param s3Client
  * @param logger
- * @return {Promise<Awaited<{id: string, docType: string, internal: boolean, external: boolean, teams: string[]}>[]>}
+ * @return {Promise<Awaited<{id: string, docType: string, internal: boolean, external: boolean, enabled: boolean, teams: string[]}>[]>}
  */
 export async function getPlatformState(s3Client, logger) {
   const bucket = config.get('platformState.s3.bucket')
@@ -22,8 +22,7 @@ export async function getPlatformState(s3Client, logger) {
 
   const body = await readS3Body(response.Body)
   const parsedJson = JSON.parse(body)
-  const docUrls = transformEntities(parsedJson, logger)
-  return await validateUrls(docUrls)
+  return transformEntities(parsedJson, logger)
 }
 
 async function readS3Body(body) {

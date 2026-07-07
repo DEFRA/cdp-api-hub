@@ -34,7 +34,8 @@ describe('transform-entities', () => {
         teams: ['platform'],
         docType: 'openapi',
         internal: true,
-        external: false
+        external: false,
+        enabled: true
       }
     })
   })
