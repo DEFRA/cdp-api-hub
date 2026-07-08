@@ -15,11 +15,6 @@ describe('#buildNavigation', () => {
         href: '/'
       },
       {
-        current: false,
-        text: 'About',
-        href: '/about'
-      },
-      {
         href: '/sign-in',
         text: 'Sign in'
       }
@@ -32,11 +27,6 @@ describe('#buildNavigation', () => {
         current: true,
         text: 'Home',
         href: '/'
-      },
-      {
-        current: false,
-        text: 'About',
-        href: '/about'
       },
       {
         href: '/sign-in',

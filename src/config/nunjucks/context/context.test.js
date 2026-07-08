@@ -55,11 +55,6 @@ describe('context and cache', () => {
               href: '/'
             },
             {
-              current: false,
-              text: 'About',
-              href: '/about'
-            },
-            {
               href: '/sign-in',
               text: 'Sign in'
             }
@@ -146,11 +141,6 @@ describe('context and cache', () => {
               current: true,
               text: 'Home',
               href: '/'
-            },
-            {
-              current: false,
-              text: 'About',
-              href: '/about'
             },
             {
               href: '/sign-in',
