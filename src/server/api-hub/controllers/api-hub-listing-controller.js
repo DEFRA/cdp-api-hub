@@ -34,7 +34,6 @@ export const hubListingsController = {
       errors.push('API listings are unavailable.')
     }
 
-    console.log(apis)
     const hubName = _.capitalize(hub)
     return h.view('api-hub/views/api-hub', {
       pageTitle: `CDP ${hubName} API Developer Hub`,
